@@ -1,17 +1,73 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
-model Post {
-  id Int @id @default(autoincrement())
-  nombre String
-  pass String
+model identificaciones {
+  id_identificacion     BigInt        @id @default(autoincrement())
+  especie               String?       @db.VarChar(20)
+  genero                String?       @db.VarChar(20)
+  nombre_comun          String?       @db.VarChar(20)
+  aprobaciones          Int
+  informaci_n_adicional String?       @map("información_adicional") @db.Text
+  id_publicacion        BigInt
+  publicaciones         publicaciones @relation(fields: [id_publicacion], references: [id_publicacion], onDelete: NoAction, onUpdate: NoAction, map: "identificaciones_ibfk_1")
+  sugerencias           sugerencias[]
+
+  @@index([id_publicacion], map: "id_publicacion")
+}
+
+model imagenes {
+  id_imagen     BigInt          @id @default(autoincrement())
+  url_imagen    String          @db.VarChar(100)
+  publicaciones publicaciones[]
+}
+
+model publicaciones {
+  id_publicacion   BigInt             @id @default(autoincrement())
+  reportes         Int
+  descripcion      String?            @db.Text
+  ubicacion        Int?
+  id_usuario       String             @db.VarChar(10)
+  id_imagen        BigInt
+  imagenes         imagenes           @relation(fields: [id_imagen], references: [id_imagen], onDelete: NoAction, onUpdate: NoAction, map: "publicaciones_ibfk_2")
+  usuarios         usuarios           @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction, map: "publicaciones_ibfk_1")
+  identificaciones identificaciones[]
+
+  @@index([id_imagen], map: "id_imagen")
+  @@index([id_usuario], map: "id_usuario")
+}
+
+model roles {
+  id_rol   BigInt     @id @default(autoincrement())
+  tipo_rol String     @db.VarChar(20)
+  usuarios usuarios[]
+}
+
+model sugerencias {
+  id_usuario        String           @db.VarChar(10)
+  id_identificacion BigInt
+  identificaciones  identificaciones @relation(fields: [id_identificacion], references: [id_identificacion], onDelete: NoAction, onUpdate: NoAction, map: "sugerencias_ibfk_2")
+  usuarios          usuarios         @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction, map: "sugerencias_ibfk_1")
+
+  @@id([id_usuario, id_identificacion])
+  @@index([id_identificacion], map: "id_identificacion")
+}
+
+model usuarios {
+  id_usuario     String          @id @db.VarChar(10)
+  correo_usuario String          @db.VarChar(50)
+  contrase_a     String          @map("contraseña") @db.VarChar(200)
+  semestre       Int?
+  programa       String?         @db.VarChar(40)
+  id_rol         BigInt
+  roles          roles           @relation(fields: [id_rol], references: [id_rol], onDelete: NoAction, onUpdate: NoAction, map: "usuarios_ibfk_1")
+  publicaciones  publicaciones[]
+  sugerencias    sugerencias[]
+
+  @@index([id_rol], map: "id_rol")
 }
