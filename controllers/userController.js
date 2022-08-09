@@ -6,20 +6,21 @@ const sendRoles = async (req, res) => {
 };
 
 const login = async (req, res) => {
-	//{ correo: 'rewrew@fd', password: 'rewrew' }
+	// { correo_usuario: 'ewrew@fgdsf', contrase_a: 'fsdfsd' }
 
 	console.log(req.body);
 };
 
 const signUp = async (req, res) => {
+	console.log(req.body);
 	// {
-	//     nombre: 'rewrew',
-	//     programa: 'rewrew',
-	//     semester: 'rewrew',
-	//     correo: 'rewrew@re',
-	//     password: '123',
-	//     confPassword: '123'
-	//   }
+	// 	id_usuario: '121312',
+	// 	correo_usuario: 'fdsfd@dgfsdfds',
+	// 	contrase_a: 'fdsfsd',
+	// 	semestre: '1231',
+	// 	programa: 'fdsfds'
+	// }
+
 	// const data = req.body;
 	// const set = await addUser(data);
 	// if (set != undefined) {
